@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+##
+##
+## PITCH_PLOT-H2.0.PY - Plots results of p2dfft on hurricane data
+##
+## Version 2.0  06-Mar-2018
+##
+## Author: 
+##   Patrick Treuthardt
+##
+## Description: 
+##    
+##
+## Revision History:
+##   2.0 - second attempt after completing python course
+##   1.0 - first attempt
+##
+## Requirements: none
+##
+##
+
+
+### Import System Libraries
+import os # operating system interfaces
+import datetime # Basic date and time types
+import fnmatch # unix filename pattern matching
+###
+
+
+### Main
+now=datetime.datetime.now() # gets current date and time
+version='2.0/20180306'
+print()
+print("pitch_plot-h2.0.py version: "+version)
+print()

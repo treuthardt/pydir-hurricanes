@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+##
+##
+## GENERATE_P2DFFT_INPUT.PY - Creates scripts to run p2dfft on hurricane images
+##
+## Version 1.0  09-Mar-2018
+##
+## Author: 
+##   Patrick Treuthardt
+##
+## Description: 
+##
+## Revision History:
+##   1.0 - first attempt
+##
+## Requirements: None
+##
+
+##
+## Import System Libraries
+##
+import os ## operating system interfaces
+import fnmatch ## unix filename pattern matching
+import datetime ## Basic date and time types
+import os.path ## Common pathname manipulations
+
+##
+## Main
+##
+
+now=datetime.datetime.now() ## gets current date and time
+version='1.0/20180309'
+
+print()
+print("Running GENERATE_P2DFFT_INPUT.PY version:", version)
+print()
+
+##
+## Locate directories with SQ*.fits files
+##
+def locate_directories(input):
+    return output
