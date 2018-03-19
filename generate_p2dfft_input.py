@@ -27,7 +27,7 @@ import sys ## System-specific parameters and functions
 import stat ## Allow chmod status changes
 
 ##
-## Main
+## Variables
 ##
 now=datetime.datetime.now() ## gets current date and time
 version='1.0/20180309'
@@ -36,7 +36,7 @@ begin_year=1995 #default beginning year
 end_year=2005 #default ending year
 runme_file="launch_01.runme"
 
-print("\nRunning GENERATE_P2DFFT_INPUT.PY version:", version,"\n")
+print("\nRunning GENERATE_P2DFFT_INPUT.PY version:", version,"\n") #Let's go!
 
 ##
 ## Create list of years
@@ -61,7 +61,6 @@ def locate_directories(yr_input):
     for i in yr_input: #looks in listed years
         path_01=base_path+str(i) #create path to year
         hurr_dirs1=os.listdir(path_01) #makes list of hurricane dirs in year
- #       print(hurr_dirs1)
         for j in hurr_dirs1:
             path_02.append(path_01+"/"+j) #creates list of folder paths
     for k in path_02: #looks in listed hurricane dirs
@@ -93,17 +92,12 @@ def create_runme_file(sq_list_input,filename_input): #input sq files and directo
     return runme_path+filename_input
 
 ##
-## Ask user to select year for run
+## Main 
 ##
-year_choice=input("Select year from 1995 - 2005 or (A)ll: ")
+year_choice=input("Select year from 1995 - 2005 or (A)ll: ") #Ask user to select year for run
 year=create_year_list(year_choice) #saves year choice
 
-##
-## Run routine to find SQ files
-##
-dir_sqfile_list=(locate_directories(year))
+dir_sqfile_list=(locate_directories(year)) #Run routine to find SQ files
 
-##
-## Tell user that process is complete
-##
-print("\nCreated "+create_runme_file(dir_sqfile_list,runme_file))
+print("\nCreated "+create_runme_file(dir_sqfile_list,runme_file)) #Tell user that process is complete
+
