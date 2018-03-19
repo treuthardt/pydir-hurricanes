@@ -35,7 +35,6 @@ base_path='/data1/patrick/PROJECTS/Hurricanes/Pictures/' # base path of data
 begin_year=1995 #default beginning year
 end_year=2005 #default ending year
 runme_file="launch_01.runme"
-num_simul_runs=8 #number of p2dfft's to run at same time
 
 print("\nRunning GENERATE_P2DFFT_INPUT.PY version:", version,"\n")
 
@@ -81,11 +80,8 @@ def locate_directories(yr_input):
 ##
 ## Write *.runme file
 ##
-def create_runme_file(sq_list_input,filename_input,run_num_input): #input sq files and directory, .runme file name
+def create_runme_file(sq_list_input,filename_input): #input sq files and directory, .runme file name
     runme_path=base_path.replace("Pictures/","")
-    if run_num_input > 24: #defaults max number to 24 cores
-        print("\nWARNING: "+str(run_num_input)+" runs set to default maximum of 24.")
-        run_num_input=24
     with open(runme_path+filename_input,'w') as f: #open for writing
         f.write('start_time="$(date -u +%s)"\n') #keeps track of start of run in bash
         for i in sq_list_input: #each key in dictionary
@@ -110,4 +106,4 @@ dir_sqfile_list=(locate_directories(year))
 ##
 ## Tell user that process is complete
 ##
-print("\nCreated "+create_runme_file(dir_sqfile_list,runme_file,num_simul_runs))
+print("\nCreated "+create_runme_file(dir_sqfile_list,runme_file))
