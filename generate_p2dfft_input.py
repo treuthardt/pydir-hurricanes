@@ -34,7 +34,7 @@ version='1.0/20180309'
 base_path='/data1/patrick/PROJECTS/Hurricanes/Pictures/' # base path of data
 begin_year=1995 #default beginning year
 end_year=2005 #default ending year
-runme_file="junk_test.runme"
+runme_file="launch_01.runme"
 num_simul_runs=8 #number of p2dfft's to run at same time
 
 print("\nRunning GENERATE_P2DFFT_INPUT.PY version:", version,"\n")
@@ -83,18 +83,16 @@ def locate_directories(yr_input):
 ##
 def create_runme_file(sq_list_input,filename_input,run_num_input): #input sq files and directory, .runme file name
     runme_path=base_path.replace("Pictures/","")
-    j=0
     if run_num_input > 24: #defaults max number to 24 cores
         print("\nWARNING: "+str(run_num_input)+" runs set to default maximum of 24.")
         run_num_input=24
     with open(runme_path+filename_input,'w') as f: #open for writing
-#        dir_txt=sq_list_input[0] #directory with sq files
+        f.write('start_time="$(date -u +%s)"\n') #keeps track of start of run in bash
         for i in sq_list_input: #each key in dictionary
-            j+=1 #iterate by +1
-            if j%run_num_input == 0:
-                f.write("cd "+sq_list_input[i]+" && 2dfft "+i+" ;\n") #write command line with element followed by key
-            else:
-                f.write("cd "+sq_list_input[i]+" && 2dfft "+i+" &\n") #write command line with element followed by key
+            f.write("cd "+sq_list_input[i]+" && 2dfft "+i+"\n") #write command line with element followed by key
+        f.write('end_time="$(date -u +%s)"\n') #keeps track of end of run in bash
+        f.write('elapsed="$(($end_time - $start_time))"\n') #math in bash
+        f.write('echo "Total of $elapsed seconds elapsed during run."') #prints elapsed time to terminal
     os.chmod(runme_path+filename_input,stat.S_IRWXU | stat.S_IRWXG | stat.S_IROTH | stat.S_IXOTH) #chmod's status to allow rwx by user & group, rx by others
     return runme_path+filename_input
 
