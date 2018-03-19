@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 ##
 ##
-## GENERATE_P2DFFT_INPUT.PY - Creates scripts to run p2dfft on hurricane images
+## COPY_FLOAT_DIRS.PY - Copies FLOAT directories from Hurricane_B to WOPR:/data1
 ##
-## Version 1.0  16-Mar-2018
+## Version 1.0  19-Mar-2018
 ##
 ## Author: 
 ##   Patrick Treuthardt
@@ -24,20 +24,16 @@ import fnmatch ## unix filename pattern matching
 import datetime ## Basic date and time types
 import os.path ## Common pathname manipulations
 import sys ## System-specific parameters and functions
-import stat ## Allow chmod status changes
 
 ##
 ## Main
 ##
 now=datetime.datetime.now() ## gets current date and time
-version='1.0/20180309'
+version='1.0/20180319'
 base_path='/data1/patrick/PROJECTS/Hurricanes/Pictures/' # base path of data
-begin_year=1995 #default beginning year
-end_year=2005 #default ending year
-runme_file="junk_test.runme"
-num_simul_runs=8 #number of p2dfft's to run at same time
-
-print("\nRunning GENERATE_P2DFFT_INPUT.PY version:", version,"\n")
+valid_min_year=1995
+valid_max_year=2005
+print("\nRunning COPY_FLOAT_DIRS.PY version:", version,"\n")
 
 ##
 ## Create list of years
@@ -77,10 +73,38 @@ def locate_directories(yr_input):
             if fnmatch.fnmatch(n,"SQ*.fits"): #if it's the correct file...
                 sq_list[n]=m #create dictionary element with SQ*fits file and FLOAT dir
     return sq_list #return dictionary
+#    print(hurr_dirs_master) 
+        
+#    path_01=base_path+str(year[0]) #set to 1995 = year[0]
+#    hurr_dirs=os.listdir(path_01) #makes list of hurricane dirs in year
+#    path_02=path_01+"/"+hurr_dirs[0]+"/FLOAT/" #makes path to first hurricane dir for 1995 = year[0]
+#    files_in_FLOAT=os.listdir(path_02) #lists all files in FLOAT dir
+#    sq_list=[]
+#    for i in files_in_FLOAT: #look at each file in FLOAT dir
+#        if fnmatch.fnmatch(i,"SQ*.fits"): #look for matching files in dir
+#            sq_list.append(i) #store matching files in sq_list
+       
+#    return path_02,sq_list 
 
 ##
 ## Write *.runme file
 ##
+#def create_runme_file(dir_sqfile_input,filename_input,run_num_input): #input sq files and directory, .runme file name
+#    runme_path=base_path.replace("Pictures/","")
+#    j=0
+#    if run_num_input > 24: #defaults max number to 24 cores
+#        print("\nWARNING: "+str(run_num_input)+" runs set to default maximum of 24.")
+#        run_num_input=24
+#    with open(runme_path+filename_input,'w') as f: #open for writing
+#        dir_txt=dir_sqfile_input[0] #directory with sq files
+#        for i in dir_sqfile_input[1]:
+#            j+=1
+#            if j%run_num_input == 0:
+#                f.write("cd "+dir_txt+" && 2dfft "+i+" ;\n") #write command line
+#            else:
+#                f.write("cd "+dir_txt+" && 2dfft "+i+" &\n") #write command line
+#    return runme_path+filename_input
+
 def create_runme_file(sq_list_input,filename_input,run_num_input): #input sq files and directory, .runme file name
     runme_path=base_path.replace("Pictures/","")
     j=0
@@ -95,21 +119,29 @@ def create_runme_file(sq_list_input,filename_input,run_num_input): #input sq fil
                 f.write("cd "+sq_list_input[i]+" && 2dfft "+i+" ;\n") #write command line with element followed by key
             else:
                 f.write("cd "+sq_list_input[i]+" && 2dfft "+i+" &\n") #write command line with element followed by key
-    os.chmod(runme_path+filename_input,stat.S_IRWXU | stat.S_IRWXG | stat.S_IROTH | stat.S_IXOTH) #chmod's status to allow rwx by user & group, rx by others
     return runme_path+filename_input
 
-##
-## Ask user to select year for run
-##
+
 year_choice=input("Select year from 1995 - 2005 or (A)ll: ")
 year=create_year_list(year_choice) #saves year choice
 
-##
-## Run routine to find SQ files
-##
 dir_sqfile_list=(locate_directories(year))
+#print(dir_sqfile_list)
+#print(dir_sqfile_list[1][0])
+#for i in dir_sqfile_list:
+#    print(dir_sqfile_list[i],i)
+    
+print("\nCreated "+create_runme_file(dir_sqfile_list,runme_file,num_simul_runs))
 
 ##
-## Tell user that process is complete
+## Ask user which year to process
 ##
-print("\nCreated "+create_runme_file(dir_sqfile_list,runme_file,num_simul_runs))
+year_choice=input("\nSelect year from 1995 - 2005: ")
+
+##
+## Check if year choice is valid
+##
+def analyze_year(choice_input):
+    if int(choice_input) > valid_max_year and int(choice_input) < valid_min_year:
+        sys.exit("ERROR: "+choice_input+" is not a vaild option.\n") #invalid choice boots from program
+    return
