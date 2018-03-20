@@ -82,6 +82,7 @@ def locate_directories(yr_input):
 def create_runme_file(sq_list_input,filename_input): #input sq files and directory, .runme file name
     runme_path=base_path.replace("Pictures/","")
     with open(runme_path+filename_input,'w') as f: #open for writing
+        f.write("#"+str(now)+"\n")
         f.write('start_time="$(date -u +%s)"\n') #keeps track of start of run in bash
         for i in sq_list_input: #each key in dictionary
             f.write("cd "+sq_list_input[i]+" && 2dfft "+i+"\n") #write command line with element followed by key
