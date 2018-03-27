@@ -117,12 +117,15 @@ def scaler_copy(dir_list_in):
 ## Change *.scaler files so that each entry begins with SQ_*.
 ##
 
-!!!!Need to change the contents of the file so that it has SQ_ in the front
+#!!!!Need to change the contents of the file so that it has SQ_ in the front
 def scaler_change(scaler_path_in):
+    substring="SQ_"
     for item01 in scaler_path_in:
         with open(item01,"r") as f:
-            contents_list=f.read()
-        print(contents_list)
+            for item02 in f:
+#                print(item02)
+                if substring not in item02:
+                    print(item02)
     print()
     return
 
