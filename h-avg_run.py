@@ -25,7 +25,7 @@ import datetime ## Basic date and time types
 import os.path ## Common pathname manipulations
 import sys ## System-specific parameters and functions
 import stat ## Allow chmod status changes
-import shutil ## High level file operations
+from shutil import copyfile ## High level file operations
 #import matplotlib.pyplot as plt ## Allows plotting
 
 ##
@@ -100,11 +100,11 @@ def scaler_copy(dir_list_in):
         for item02 in contents_list: #begin looking for *.scaler_old in dir
             if fnmatch.fnmatch(item02,"*.scaler_old"): #will skip if *old exists
                 skip=1 #tag *.scaler_old already exits
-                print("ATTENTION: "+item02+" already exists")
+                print("ATTENTION: "+item02+" already exists. Skipping.")
         if skip == 0: #begin coping if *.scaler_old doesn't already exist
             for item03 in contents_list: #run for each file in directory
                 if fnmatch.fnmatch(item03,"*.scaler"): #find *.scaler file
-#                    copyfile(item01+item03,item01+item03+"_old") #copy to diff file
+                    copyfile(item01+item03,item01+item03+"_old") #copy to diff file
                     print("Copied "+item03+" --> "+item03+"_old")
         for item04 in contents_list: #begin making path list of *.scaler files
             if fnmatch.fnmatch(item04,"*.scaler"): #find scaler file again
@@ -114,19 +114,19 @@ def scaler_copy(dir_list_in):
     return scaler_path_out
 
 ##
-## Change *.scaler files so that each entry begins with SQ_*.
+## Append *.scaler files so that each entry that doesn't begin with SQ_*, does.
 ##
 
-#!!!!Need to change the contents of the file so that it has SQ_ in the front
+#!!!not quite right. if run twice, will still append same SQ_ lines to file.
 def scaler_change(scaler_path_in):
     substring="SQ_"
     for item01 in scaler_path_in:
-        with open(item01,"r") as f:
-            for item02 in f:
-#                print(item02)
-                if substring not in item02:
-                    print(item02)
-    print()
+        with open(item01,"r") as f: #open file for appending and reading
+            for item02 in f: #look at each item in file
+                print(item02)
+#                if substring not in item02: #if no SQ_ in line
+#                    with open(item01,"a+") as g: #open same file for appending
+#                        g.write(substring+item02) #append SQ_ to file
     return
 
 ##
