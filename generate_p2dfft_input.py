@@ -27,24 +27,38 @@ import sys ## System-specific parameters and functions
 import stat ## Allow chmod status changes
 
 ##
-## Variables
+## Global Variables
 ##
-now=datetime.datetime.now() ## gets current date and time
-version='1.0/20180309'
-base_path='/data1/patrick/PROJECTS/Hurricanes/Pictures/' # base path of data
-begin_year=1995 #default beginning year
-end_year=2005 #default ending year
-runme_file="launch_01.runme"
+##   NOW: gets current date and time
+##   VERSION: latest version number of this program
+##   BASE_PATH: base path of data
+##   BEGIN_YEAR: default beginning year
+##   END_YEAR: default ending year
+##   RUNME_DIR: directory holding *.runme text files to run in bash
+##   RUNME_FILE: default filename of runmefile
 
-print("\nRunning GENERATE_P2DFFT_INPUT.PY version:", version,"\n") #Let's go!
+NOW=datetime.datetime.now() ## gets current date and time
+VERSION='1.0/20180309'
+BASE_PATH='/data1/patrick/PROJECTS/Hurricanes/Pictures/' # base path of data
+BEGIN_YEAR=1995 #default beginning year
+END_YEAR=2005 #default ending year
+RUNME_DIR="/data1/patrick/PROJECTS/Hurricanes/runme/"
+RUNME_FILE="launch_01.runme"
+
+##
+## Let's go!
+##
+
+print("\nRunning GENERATE_P2DFFT_INPUT.PY version:", version,"\n")
 
 ##
 ## Create list of years
 ##
+
 def create_year_list(choice_input):
     year_output=[] #initialize list
     if choice_input == "A" or choice_input == "a":
-        for i in range(begin_year,end_year+1): 
+        for i in range(BEGIN_YEAR,END_YEAR+1): 
             year_output.append(i) #append each year to list
     elif int(choice_input) < 2006 and int(choice_input) > 1994:
         year_output.append(choice_input) #append single choice to list
@@ -55,11 +69,12 @@ def create_year_list(choice_input):
 ##
 ## Locate and link directories with SQ*.fits files
 ##
+
 def locate_directories(yr_input):
     path_02=[]
     path_03=[]
     for i in yr_input: #looks in listed years
-        path_01=base_path+str(i) #create path to year
+        path_01=BASE_PATH+str(i) #create path to year
         hurr_dirs1=os.listdir(path_01) #makes list of hurricane dirs in year
         for j in hurr_dirs1:
             path_02.append(path_01+"/"+j) #creates list of folder paths
@@ -79,10 +94,11 @@ def locate_directories(yr_input):
 ##
 ## Write *.runme file
 ##
+
 def create_runme_file(sq_list_input,filename_input): #input sq files and directory, .runme file name
-    runme_path=base_path.replace("Pictures/","")
+    runme_path=RUNME_DIR
     with open(runme_path+filename_input,'w') as f: #open for writing
-        f.write("#"+str(now)+"\n")
+        f.write("#"+str(NOW)+"\n") #time stamp
         f.write('start_time="$(date -u +%s)"\n') #keeps track of start of run in bash
         for i in sq_list_input: #each key in dictionary
             f.write("cd "+sq_list_input[i]+" && 2dfft "+i+"\n") #write command line with element followed by key
@@ -95,10 +111,11 @@ def create_runme_file(sq_list_input,filename_input): #input sq files and directo
 ##
 ## Main 
 ##
+
 year_choice=input("Select year from 1995 - 2005 or (A)ll: ") #Ask user to select year for run
 year=create_year_list(year_choice) #saves year choice
 
 dir_sqfile_list=(locate_directories(year)) #Run routine to find SQ files
 
-print("\nCreated "+create_runme_file(dir_sqfile_list,runme_file)) #Tell user that process is complete
+print("\nCreated "+create_runme_file(dir_sqfile_list,RUNME_FILE)) #Tell user that process is complete
 
